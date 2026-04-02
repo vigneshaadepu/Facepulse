@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FacePulse | Biometric Security Node</title>
+    
+    <link rel="icon" href="/static/img/logo.png" type="image/png">
+    
+    <!-- External Libraries -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div id="glow-bg"></div>
+    
+    <!-- Login Screen -->
+    <div id="login-container" class="full-page-view">
+        <section id="login-view" class="view" data-aos="zoom-in">
+            <div class="login-card glass-card">
+                <div class="login-header">
+                    <img src="/static/img/logo.png" class="auth-logo" alt="FacePulse">
+                    <h2>FacePulse Auth</h2>
+                    <p>Verification required to access node</p>
+                </div>
+                <form id="login-form" onsubmit="handleLogin(event)">
+                    <div class="input-block">
+                        <label>Identifier</label>
+                        <div class="field-wrapper">
+                            <i class="fas fa-fingerprint"></i>
+                            <input type="text" id="username" placeholder="vignesh" required>
+                        </div>
+                    </div>
+                    <div class="input-block">
+                        <label>Security Key</label>
+                        <div class="field-wrapper">
+                            <i class="fas fa-lock-open"></i>
+                            <input type="password" id="password" placeholder="••••••••" required>
+                        </div>
+                    </div>
+                    <div class="input-block">
+                        <label>Clearance Level</label>
+                        <div class="field-wrapper">
+                            <i class="fas fa-user-shield"></i>
+                            <select id="role">
+                                <option value="student">Student Portal</option>
+                                <option value="admin">Admin Console</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="primary-btn">Initialize Connection</button>
+                </form>
+                <div class="auth-footer">Node State: <span class="active-pulse">ONLINE</span></div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Main Application Structure -->
+    <div id="app-structure" class="hidden">
+        <aside class="sidebar">
+            <div class="side-brand">
+                <img src="/static/img/logo.png" class="side-logo">
+                <span class="brand-name">FacePulse</span>
+            </div>
+            <nav class="side-nav">
+                <div id="admin-menu" class="menu-set hidden">
+                    <button class="nav-link active" onclick="showDashboard('admin')"><i class="fas fa-terminal"></i> Dashboard</button>
+                    <button class="nav-link" onclick="openScanner()"><i class="fas fa-video"></i> Surveillance</button>
+                    <button class="nav-link" onclick="openTrainer()"><i class="fas fa-brain"></i> AI Trainer</button>
+                </div>
+                <div id="student-menu" class="menu-set hidden">
+                    <button class="nav-link active" onclick="showDashboard('student')"><i class="fas fa-house-chimney"></i> Main Hub</button>
+                    <button class="nav-link" onclick="openScanner()"><i class="fas fa-camera-viewfinder"></i> Attendance</button>
+                </div>
+                <button class="nav-link logout-link" onclick="logout()"><i class="fas fa-power-off"></i> Terminate Session</button>
+            </nav>
+        </aside>
+
+        <main class="content-view">
+            <header class="content-header">
+                <div class="user-intro">
+                    <h1 id="welcome-msg">...</h1>
+                    <p id="current-date" class="date-text"></p>
+                </div>
+                <div class="header-status">
+                    <div class="badge-chip">
+                        <i class="fas fa-wave-pulse pulse-anim"></i> Scan Relay Active
+                    </div>
+                </div>
+            </header>
+
+            <div id="view-port">
+                <!-- Registration Flow -->
+                <section id="register-view" class="view hidden">
+                    <div class="centered-card glass-card" data-aos="fade-up">
+                        <img src="/static/img/logo.png" class="reg-hero-logo">
+                        <h3>Incomplete Biometric Node</h3>
+                        <p>We need to register your facial signature before granting full access to the attendance pulse.</p>
+                        <button onclick="startRegistration()" class="accent-btn">Start Mapping</button>
+                    </div>
+                </section>
+
+                <!-- Surveillance Scanner -->
+                <section id="scanner-view" class="view hidden">
+                    <div class="scanner-interface">
+                        <div class="video-panel glass-card" data-aos="fade-right">
+                            <div class="panel-head">
+                                <h3><i class="fas fa-eye"></i> Biometric Stream</h3>
+                                <div class="live-tag"><span class="blink-dot"></span> LIVE</div>
+                            </div>
+                            <div class="stream-box">
+                                <img id="video-stream" src="" alt="Neural Stream">
+                                <div class="laser-scanner"></div>
+                            </div>
+                            <button onclick="closeScanner()" class="cancel-btn">Abort Scan</button>
+                        </div>
+                        <div class="log-panel glass-card" data-aos="fade-left">
+                            <h4>Temporal Logs</h4>
+                            <div id="log-list" class="scroll-stack">
+                                <div class="log-item">Ready for input...</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Student Dashboard -->
+                <section id="student-view" class="view hidden">
+                    <div class="portal-grid">
+                        <div class="summary-card glass-card" data-aos="zoom-in">
+                            <div class="profile-meta">
+                                <div class="user-avatar"><i class="fas fa-user-astronaut"></i></div>
+                                <div>
+                                    <h2 id="student-name">...</h2>
+                                    <span class="user-tag">Student Node</span>
+                                </div>
+                            </div>
+                            <div class="metric-row">
+                                <div class="m-box"><span>Pulse Map</span><h3 id="att-percentage">0%</h3></div>
+                                <div class="m-box"><span>Status</span><h3 class="t-green">SECURE</h3></div>
+                            </div>
+                            <button class="full-width-btn" onclick="openScanner()">Trigger Attendance Scan</button>
+                        </div>
+                        <div class="viz-card glass-card" data-aos="fade-up">
+                            <h4>Activity Density</h4>
+                            <div class="canvas-box"><canvas id="studentTrendChart"></canvas></div>
+                        </div>
+                        <div class="viz-card glass-card full-span" data-aos="fade-up" data-aos-delay="100">
+                            <h4>Metric Reliability Factor</h4>
+                            <div class="canvas-box-large"><canvas id="studentRadarChart"></canvas></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Admin Dashboard -->
+                <section id="admin-view" class="view hidden">
+                    <div class="nodes-grid">
+                        <div class="node-cell glass-card" data-aos="zoom-in">
+                            <i class="fas fa-microchip ic-blue"></i>
+                            <div><p>Active Nodes</p><h3 id="total-students">...</h3></div>
+                        </div>
+                        <div class="node-cell glass-card" data-aos="zoom-in" data-aos-delay="100">
+                            <i class="fas fa-network-wired ic-green"></i>
+                            <div><p>AI Engine</p><h3>SYNCHRONIZED</h3></div>
+                        </div>
+                    </div>
+                    <div id="admin-locked" class="security-barrier glass-card" data-aos="fade-up">
+                        <i class="fas fa-user-lock"></i>
+                        <h3>Restricted Admin Access</h3>
+                        <p>Perform a facial token exchange to unlock student directory logs.</p>
+                        <button onclick="openScanner()" class="unlock-btn">Validate Identity</button>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="/static/js/main.js"></script>
+    <script>
+        AOS.init({ duration: 800, once: true });
+    </script>
+</body>
+</html>

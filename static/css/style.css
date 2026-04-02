@@ -1,0 +1,69 @@
+:root {
+    --bg-dark: #020617;
+    --side-bg: #0f172a;
+    --accent: #38bdf8;
+    --accent-glow: rgba(56, 189, 248, 0.4);
+    --green: #22c55e;
+    --red: #ef4444;
+    --purple: #a855f7;
+    --text-main: #f8fafc;
+    --text-mute: #94a3b8;
+    --glass: rgba(15, 23, 42, 0.5);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Outfit', sans-serif; background-color: var(--bg-dark); color: var(--text-main); overflow-x: hidden; min-height: 100vh; }
+.hidden { display: none !important; }
+
+#glow-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+    background: radial-gradient(circle at 10% 10%, rgba(56, 189, 248, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(168, 85, 247, 0.05) 0%, transparent 40%);
+}
+
+/* Sidebar Nav Links */
+.nav-link { 
+    width: 100%; padding: 18px 25px; background: transparent; border: none; border-radius: 18px;
+    color: var(--text-mute); display: flex; align-items: center; gap: 20px; font-size: 1.1rem;
+    cursor: pointer; transition: 0.3s; text-align: left;
+}
+.nav-link:hover { background: rgba(255, 255, 255, 0.03); color: #fff; transform: translateX(8px); }
+.nav-link.active { background: var(--accent); color: #fff; box-shadow: 0 10px 20px rgba(56, 189, 248, 0.25); }
+
+/* CTA Button */
+.cta-btn {
+    padding: 16px 30px; background: linear-gradient(135deg, var(--accent), #2563eb); border: none;
+    border-radius: 12px; color: #fff; font-size: 1.05rem; font-weight: 700; cursor: pointer; transition: 0.3s;
+}
+.cta-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(56, 189, 248, 0.3); }
+
+/* Heatmap Grid Specifics */
+.heatmap-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-top: 25px; }
+.h-box { aspect-ratio: 1; border-radius: 8px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); transition: 0.3s; }
+.h-box.active { background: #38bdf8; box-shadow: 0 0 15px var(--accent-glow); border: none; }
+
+/* Scrollbar Style */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent-glow); }
+
+/* Portal Animations */
+[data-aos] { pointer-events: none; }
+[data-aos].aos-animate { pointer-events: auto; }
+
+/* Form Elements (Horizontal Spread used in login page) */
+.f-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.span-full { grid-column: span 2; }
+
+/* Feature Card Styling for Resources */
+.f-card { background: rgba(255, 255, 255, 0.02); border: 1px solid var(--glass-border); padding: 30px; border-radius: 20px; transition: 0.3s; cursor: pointer; }
+.f-card:hover { border-color: var(--accent); background: rgba(56, 189, 248, 0.05); transform: translateY(-5px); }
+
+/* Layout Perfection */
+.main-portal-view { flex: 1; height: 100vh; overflow-y: auto; padding-bottom: 100px; }
+.glass-module { min-height: 200px; display: flex; flex-direction: column; justify-content: center; }
+.summary-card { min-height: auto; justify-content: space-between; }
+.schedule-card { transition: 0.2s; }
+.schedule-card:hover { background: rgba(56, 189, 248, 0.05); transform: scale(1.02); }

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FacePulse | The AI Attendance Revolution</title>
+    
+    <link rel="icon" href="/static/img/logo.png" type="image/png">
+    
+    <!-- External Libs -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .about-main {
+            background: linear-gradient(to bottom, #020617, #0f172a);
+            min-height: 100vh;
+            color: #fff;
+            scroll-behavior: smooth;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero-title {
+            font-size: 6rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #fff, #38bdf8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.8rem;
+            color: #94a3b8;
+            max-width: 800px;
+            margin-bottom: 40px;
+        }
+
+        .cta-btn {
+            padding: 22px 60px;
+            background: linear-gradient(135deg, #38bdf8, #2563eb);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.4s;
+            box-shadow: 0 10px 40px rgba(56, 189, 248, 0.4);
+        }
+
+        .cta-btn:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 15px 50px rgba(56, 189, 248, 0.6); }
+
+        /* Feature Section */
+        .section-box { padding: 120px 10%; text-align: center; }
+        .section-title { font-size: 3rem; margin-bottom: 60px; font-weight: 700; }
+
+        .feature-flex { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
+        .feature-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 50px 30px;
+            border-radius: 30px;
+            transition: 0.3s;
+        }
+        .feature-card:hover { border-color: #38bdf8; background: rgba(56, 189, 248, 0.05); transform: translateY(-10px); }
+
+        .f-icon { font-size: 3rem; color: #38bdf8; margin-bottom: 25px; }
+
+        /* Process Section */
+        .process-row { display: flex; align-items: center; justify-content: space-between; margin-top: 50px; text-align: left; }
+        .p-step { flex: 1; padding: 40px; position: relative; }
+        .p-num { font-size: 4rem; font-weight: 700; opacity: 0.1; position: absolute; top: -10px; left: 10px; }
+
+        /* Footer */
+        .page-footer {
+            padding: 80px 10%;
+            background: #020617;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+        }
+
+        .scroll-down {
+            position: absolute; bottom: 30px; left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            font-size: 2rem; color: #38bdf8;
+        }
+        @keyframes bounce { 0%, 100% { bottom: 30px; } 50% { bottom: 20px; } }
+    </style>
+</head>
+<body class="about-main">
+    <div id="glow-bg"></div>
+    
+    <header style="padding: 30px 10%; display: flex; justify-content: space-between; align-items: center; position: absolute; width: 100%; top: 0; z-index: 100;">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <img src="/static/img/logo.png" style="height: 45px;">
+            <span style="font-size: 1.6rem; font-weight: 700; background: linear-gradient(to right, #fff, #38bdf8); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">FacePulse</span>
+        </div>
+        <nav style="display: flex; gap: 40px;">
+            <a href="/login" style="color: #fff; text-decoration: none; font-weight: 600; opacity: 0.7; transition: 0.3s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.7">Launch Portal</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <h1 class="hero-title" data-aos="zoom-out">Experience the Pulse</h1>
+        <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="200">The most advanced, biometric-first attendance ecosystem designed for elite institutions and forward-thinking campuses.</p>
+        <button class="cta-btn" onclick="location.href='/login'" data-aos="fade-up" data-aos-delay="400">Join the Network</button>
+        <div class="scroll-down"><i class="fas fa-chevron-down"></i></div>
+    </section>
+
+    <!-- Why Section -->
+    <section class="section-box">
+        <h2 class="section-title" data-aos="fade-up">Why Choose FacePulse?</h2>
+        <div class="feature-flex">
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                <i class="fas fa-bolt f-icon"></i>
+                <h3>0.2s Recognition</h3>
+                <p style="color: #94a3b8; margin-top: 15px;">Lightning-fast AI detection ensures no queues or bottlenecks during peak hours.</p>
+            </div>
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                <i class="fas fa-fingerprint f-icon"></i>
+                <h3>Zero Proxy</h3>
+                <p style="color: #94a3b8; margin-top: 15px;">Eliminate proxy attendance completely with unique neural biometric signatures.</p>
+            </div>
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                <i class="fas fa-shield-halved f-icon"></i>
+                <h3>Geo-Gencing</h3>
+                <p style="color: #94a3b8; margin-top: 15px;">The system only activates within your authorized campus Wi-Fi network zones.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Section -->
+    <section class="section-box" style="background: rgba(255, 255, 255, 0.01);">
+        <h2 class="section-title" data-aos="fade-up">How It Operates</h2>
+        <div class="process-row">
+            <div class="p-step" data-aos="fade-right">
+                <span class="p-num">01</span>
+                <h3>Enroll Identity</h3>
+                <p style="color: #94a3b8; margin-top: 10px;">New students create an account and capture 50 unique neural face maps using a standard camera.</p>
+            </div>
+            <div class="p-step" data-aos="fade-up">
+                <span class="p-num">02</span>
+                <h3>AI Calibration</h3>
+                <p style="color: #94a3b8; margin-top: 10px;">The system processes and trains on your data, creating a secure biometric token for your profile.</p>
+            </div>
+            <div class="p-step" data-aos="fade-left">
+                <span class="p-num">03</span>
+                <h3>Instant Presence</h3>
+                <p style="color: #94a3b8; margin-top: 10px;">Walk to the portal, the AI recognizes you at 70%+ confidence, and your presence is logged instantly.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="page-footer">
+        <h3 style="margin-bottom: 20px;">Ready to revolutionize your campus?</h3>
+        <p style="color: #94a3b8; margin-bottom: 40px;">FacePulse is a product of AI Biometric Labs. Designed for speed, security, and simplicity.</p>
+        <div style="display: flex; justify-content: center; gap: 30px; font-size: 1.5rem;">
+            <i class="fab fa-github" style="cursor: pointer; transition: 0.3s;" onmouseover="this.style.color='#38bdf8'" onmouseout="this.style.color='#fff'"></i>
+            <i class="fab fa-linkedin" style="cursor: pointer; transition: 0.3s;" onmouseover="this.style.color='#38bdf8'" onmouseout="this.style.color='#fff'"></i>
+            <i class="fab fa-twitter" style="cursor: pointer; transition: 0.3s;" onmouseover="this.style.color='#38bdf8'" onmouseout="this.style.color='#fff'"></i>
+        </div>
+        <p style="margin-top: 60px; font-size: 0.85rem; color: #334155;">&copy; 2026 AI Biometric Labs. All rights reserved.</p>
+    </footer>
+
+    <script>
+        AOS.init({ duration: 1000, once: true });
+    </script>
+</body>
+</html>

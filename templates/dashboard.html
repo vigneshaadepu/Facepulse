@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FacePulse | Intelligence Command Hub</title>
+    
+    <link rel="icon" href="/static/img/logo.png" type="image/png">
+    
+    <!-- External Libs -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .dashboard-container { display: flex; height: 100vh; overflow: hidden; background: #020617; }
+        
+        /* Enriched Sidebar */
+        .sidebar { width: 340px; height: 100%; background: #0f172a; border-right: 1px solid rgba(255, 255, 255, 0.05); padding: 40px 25px; display: flex; flex-direction: column; z-index: 1001; overflow-y: auto; }
+        .side-brand { display: flex; align-items: center; gap: 15px; margin-bottom: 50px; }
+        .side-brand h1 { font-size: 2.2rem; font-weight: 700; background: linear-gradient(135deg, #fff, #38bdf8); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .side-nav { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+        .nav-link { padding: 16px 20px; color: #94a3b8; border-radius: 14px; font-weight: 600; display: flex; align-items: center; gap: 18px; transition: 0.3s; cursor: pointer; border: none; background: transparent; text-align: left; }
+        .nav-link:hover { background: rgba(255, 255, 255, 0.03); color: #fff; transform: translateX(5px); }
+        .nav-link.active { background: #38bdf8; color: #fff; box-shadow: 0 10px 25px rgba(56, 189, 248, 0.3); }
+        .nav-link i { font-size: 1.2rem; width: 25px; }
+
+        .side-label { font-size: 0.75rem; font-weight: 800; color: #334155; text-transform: uppercase; letter-spacing: 2px; margin: 30px 0 15px 15px; }
+
+        /* Main Portal Content */
+        .portal-content { flex: 1; height: 100%; overflow-y: auto; padding: 50px; background: radial-gradient(circle at 100% 0, rgba(56, 189, 248, 0.04), transparent 40%); }
+        .header-box { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 50px; }
+        .header-box h2 { font-size: 2.6rem; color: #fff; margin-bottom: 5px; }
+        .header-box p { color: #94a3b8; font-size: 1.1rem; }
+        
+        .status-badge { padding: 12px 25px; border-radius: 50px; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255,255,255,0.05); color: #38bdf8; font-weight: 700; display: flex; align-items: center; gap: 12px; }
+
+        /* Modules Grid */
+        .module-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+        .span-2 { grid-column: span 2; }
+        .span-3 { grid-column: span 3; }
+        .glass-card { background: rgba(30, 41, 59, 0.45); backdrop-filter: blur(30px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 35px; padding: 40px; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4); }
+
+        /* Attendance Marking View */
+        .attendance-portal-hero { text-align: center; }
+        .hero-ic-box { width: 120px; height: 120px; border-radius: 35px; background: rgba(56, 189, 248, 0.1); color: #38bdf8; display: flex; align-items: center; justify-content: center; font-size: 4rem; margin: 0 auto 30px; border: 1px solid rgba(56, 189, 248, 0.2); }
+        .start-btn { padding: 22px 60px; font-size: 1.3rem; font-weight: 700; background: linear-gradient(135deg, #38bdf8, #2563eb); color: #fff; border: none; border-radius: 20px; cursor: pointer; transition: 0.3s; box-shadow: 0 15px 40px rgba(56, 189, 248, 0.4); margin-top: 30px; }
+        .start-btn:hover { transform: translateY(-5px); box-shadow: 0 20px 50px rgba(56, 189, 248, 0.6); }
+
+        /* Popup Styles */
+        .biometric-modal { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.9); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
+        .modal-card { width: 900px; background: #0f172a; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 40px; overflow: hidden; position: relative; }
+        .modal-body { aspect-ratio: 16/9; background: #000; position: relative; display: flex; align-items: center; justify-content: center; }
+        #modal-stream { width: 100%; height: 100%; object-fit: cover; }
+        .scan-overlay { position: absolute; inset: 0; pointer-events: none; border: 24px solid rgba(56, 189, 248, 0.1); border-radius: 40px; z-index: 10; }
+        .scan-line { position: absolute; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, #38bdf8, transparent); animation: laser 3s infinite linear; z-index: 20; }
+        @keyframes laser { 0% { top: 0; } 100% { top: 100%; } }
+        .close-modal { position: absolute; top: 30px; right: 30px; font-size: 2rem; color: #fff; cursor: pointer; opacity: 0.5; transition: 0.3s; z-index: 30; }
+        .close-modal:hover { opacity: 1; transform: rotate(90deg); }
+
+        /* Left Side (Sidebar) - Effective Features */
+        .sidebar-bottom { margin-top: auto; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 30px; }
+        .goal-card { padding: 20px; background: rgba(56, 189, 248, 0.05); border-radius: 18px; border: 1px solid rgba(56, 189, 248, 0.1); margin-top: 20px; }
+        .goal-head { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.85rem; font-weight: 700; color: #94a3b8; }
+        .goal-bar { height: 6px; background: rgba(255, 255, 255, 0.1); border-radius: 3px; overflow: hidden; }
+        .goal-fill { height: 100%; background: #38bdf8; border-radius: 3px; box-shadow: 0 0 10px #38bdf8; }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <div id="glow-bg"></div>
+
+    <!-- Biometric Popup Modal -->
+    <div id="biometric-modal" class="biometric-modal">
+        <div class="modal-card" data-aos="zoom-in">
+            <div class="close-modal" onclick="closeBiometricModal()"><i class="fas fa-times"></i></div>
+            <div class="modal-body">
+                <img id="modal-stream" src="" alt="Neural AI stream">
+                <div class="scan-overlay"></div>
+                <div class="scan-line"></div>
+            </div>
+            <div style="padding: 25px; text-align: center; color: #94a3b8;">
+                <p id="biometric-hint">Position your face in the center of the frame for verification.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dynamic Dashboard Container -->
+    <div id="app-portal" class="dashboard-container">
+        <!-- Enriched Sidebar -->
+        <aside class="sidebar">
+            <div class="side-brand">
+                <img src="/static/img/logo.png" style="height: 40px;">
+                <h1>FacePulse</h1>
+            </div>
+
+            <nav class="side-nav">
+                <div class="side-label">Academic Access</div>
+                <div id="student-menu" class="hidden">
+                    <button class="nav-link active" onclick="showDashboard('student-home')"><i class="fas fa-th-large"></i> Intelligence Hub</button>
+                    <button class="nav-link" onclick="showDashboard('student-mark')"><i class="fas fa-user-check"></i> Mark Presence</button>
+                    <button class="nav-link" onclick="showDashboard('academy-center')"><i class="fas fa-graduation-cap"></i> Resource Pool</button>
+                </div>
+                <div id="admin-menu" class="hidden">
+                    <button class="nav-link active" onclick="showDashboard('admin-home')"><i class="fas fa-server"></i> System Core</button>
+                    <button class="nav-link" onclick="showDashboard('admin-logs')"><i class="fas fa-database"></i> Binary Records</button>
+                </div>
+
+                <div class="side-label">Operations</div>
+                <button class="nav-link"><i class="fas fa-envelope"></i> Secure Mail</button>
+                <button class="nav-link"><i class="fas fa-calendar-day"></i> Academic Planner</button>
+                <button class="nav-link"><i class="fas fa-gear"></i> System Settings</button>
+
+                <div class="sidebar-bottom">
+                    <div class="goal-card">
+                        <div class="goal-head"><span>WEEKLY GOAL</span> <span>75%</span></div>
+                        <div class="goal-bar"><div class="goal-fill" style="width: 75%;"></div></div>
+                    </div>
+                </div>
+
+                <button class="nav-link" style="margin-top: 30px; color: #ef4444;" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Quit Matrix</button>
+            </nav>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="portal-content">
+            <header class="header-box">
+                <div>
+                    <h2 id="st-greeting">Welcome Back, Agent</h2>
+                    <p id="curr-date-text">Syncing temporal logs...</p>
+                </div>
+                <div id="wifi-badge" class="status-badge">
+                    <i class="fas fa-wifi"></i> <span>Pulse Sync: Active</span>
+                </div>
+            </header>
+
+            <div id="view-viewport">
+                <!-- REGISTRATION (Force) -->
+                <section id="register-view" class="view hidden">
+                    <div class="glass-card attendance-portal-hero" data-aos="fade-up">
+                        <div class="hero-ic-box"><i class="fas fa-user-plus"></i></div>
+                        <h2>Create Biometric Profile</h2>
+                        <p style="color: #94a3b8; max-width: 600px; margin: 0 auto;">Vignesh, we noticed your face data is missing from our neural network. Map your identity now to unlock full attendance capabilities.</p>
+                        <button class="start-btn" onclick="openBiometricScanner('registration')">Initialize Neural Mapping</button>
+                    </div>
+                </section>
+
+                <!-- STUDENT ATTENDANCE MARKING View -->
+                <section id="student-mark-view" class="view hidden">
+                    <div class="module-grid">
+                        <div class="glass-card attendance-portal-hero span-3" data-aos="fade-up">
+                            <div class="hero-ic-box"><i class="fas fa-id-card-clip"></i></div>
+                            <h3>Daily Presence Certification</h3>
+                            <p style="color: #94a3b8; margin-top: 15px;">Verify your identity to authenticate your presence in the current academic portal.</p>
+                            <button class="start-btn" onclick="openBiometricScanner('attendance')">Launch Biometric Scan</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- STUDENT HOME VIEW -->
+                <section id="student-home-view" class="view hidden">
+                    <div class="module-grid">
+                        <div class="glass-card span-2" data-aos="fade-right">
+                            <h3>Intelligence Summary</h3>
+                            <p style="color: #94a3b8; margin-bottom: 30px;">Overview of your academic engagement metrics.</p>
+                            <div style="height: 350px;"><canvas id="studentMainChart"></canvas></div>
+                        </div>
+                        <div class="glass-card" data-aos="fade-left">
+                            <h3 style="margin-bottom: 25px;">Presence Score</h3>
+                            <div style="text-align: center; margin: 30px 0;">
+                                <h1 id="st-att-pct" style="font-size: 5rem; font-weight: 700; color: #38bdf8; text-shadow: 0 0 20px rgba(56,189,248,0.4);">0%</h1>
+                                <p class="t-mute">Verified Sessions</p>
+                            </div>
+                            <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 25px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 15px;"><span>Academic Hub</span> <strong>Elite</strong></div>
+                                <div style="display: flex; justify-content: space-between;"><span>Neural Integrity</span> <strong>92.4%</strong></div>
+                            </div>
+                        </div>
+
+                        <div class="glass-card span-3" data-aos="fade-up">
+                            <h3>Engagement Calendar Matrix</h3>
+                            <div id="attendance-heatmap" style="display: grid; grid-template-columns: repeat(14, 1fr); gap: 15px; margin-top: 30px;">
+                                <!-- JS items -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ADMIN VIEW (Core) -->
+                <section id="admin-home-view" class="view hidden">
+                    <div class="module-grid">
+                        <div class="glass-card" data-aos="zoom-in">
+                            <i class="fas fa-users-viewfinder" style="font-size: 2.2rem; color: #38bdf8; margin-bottom: 20px;"></i>
+                            <p class="t-mute">Synchronized Profiles</p>
+                            <h2 id="adm-p-count" style="font-size: 3rem;">...</h2>
+                        </div>
+                        <div class="glass-card" data-aos="zoom-in" data-aos-delay="100">
+                            <i class="fas fa-shield-virus" style="font-size: 2.2rem; color: #22c55e; margin-bottom: 20px;"></i>
+                            <p class="t-mute">Core Security Engine</p>
+                            <h2 style="font-size: 3rem;">Ready</h2>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="/static/js/main.js"></script>
+    <script>
+        AOS.init({ duration: 800, once: true });
+    </script>
+</body>
+</html>

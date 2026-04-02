@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FacePulse | Security Gates</title>
+    
+    <link rel="icon" href="/static/img/logo.png" type="image/png">
+    
+    <!-- External Libs -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .login-view-port {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at top right, #1e293b, #020617);
+            padding: 20px;
+        }
+
+        .auth-master-card {
+            width: 1100px;
+            padding: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 70px;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 40px;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+        }
+
+        .auth-label-side { flex: 1; }
+        .auth-label-side h1 {
+            font-size: 5.5rem;
+            font-weight: 700;
+            letter-spacing: -3px;
+            background: linear-gradient(to right, #fff, #38bdf8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 25px;
+        }
+
+        .auth-label-side p { font-size: 1.3rem; color: #94a3b8; line-height: 1.6; }
+
+        .auth-form-side { flex: 1.2; position: relative; }
+        .auth-box {
+            background: rgba(2, 6, 23, 0.7);
+            padding: 50px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .tab-switcher { display: flex; gap: 20px; margin-bottom: 35px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; }
+        .tab-btn { background: transparent; border: none; font-size: 1.1rem; color: #475569; font-weight: 600; cursor: pointer; transition: 0.3s; padding: 5px 15px; }
+        .tab-btn.active { color: #38bdf8; border-bottom: 2px solid #38bdf8; }
+
+        .f-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; }
+        .span-full { grid-column: span 2; }
+
+        .input-group-v2 { text-align: left; }
+        .input-group-v2 label { display: block; font-size: 0.9rem; color: #94a3b8; margin-bottom: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; }
+        .input-group-v2 input, .input-group-v2 select {
+            width: 100%;
+            padding: 16px 20px;
+            background: #0f172a;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            color: #fff;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+        .input-group-v2 input:focus { border-color: #38bdf8; outline: none; box-shadow: 0 0 15px rgba(56, 189, 248, 0.1); }
+
+        .auth-submit-btn {
+            width: 100%; padding: 20px; background: linear-gradient(135deg, #38bdf8, #2563eb);
+            color: #fff; border: none; border-radius: 14px; font-weight: 700; font-size: 1.2rem; cursor: pointer; transition: 0.3s;
+        }
+        .auth-submit-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(56, 189, 248, 0.4); }
+
+        .wifi-geofence {
+            margin-top: 50px; padding: 20px; border-radius: 20px; background: rgba(0,0,0,0.2);
+            display: flex; align-items: center; gap: 20px; border: 1px solid rgba(255,255,255,0.03);
+        }
+    </style>
+</head>
+<body>
+    <div class="login-view-port">
+        <div class="auth-master-card" data-aos="zoom-in">
+            <div class="auth-label-side" data-aos="fade-right">
+                <h1>FacePulse</h1>
+                <p>Welcome to the Elite Attendance Ecosystem. Please verify your identity or join our network to harmonize your academic presence.</p>
+                
+                <div class="wifi-geofence">
+                    <i class="fas fa-radar" style="font-size: 2rem; color: #38bdf8; animation: rotate 4s infinite linear;"></i>
+                    <div style="text-align: left;">
+                        <span style="font-size: 0.8rem; color: #475569; display: block; font-weight: 700;">GEOFENCE SIGNAL</span>
+                        <div id="status-text" style="font-weight: 700;">Optimizing Relay...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="auth-form-side" data-aos="fade-left">
+                <div class="auth-box">
+                    <div class="tab-switcher">
+                        <button id="login-tab" class="tab-btn active" onclick="switchAuth('login')">Enter Portal</button>
+                        <button id="signup-tab" class="tab-btn" onclick="switchAuth('signup')">Create Account</button>
+                    </div>
+
+                    <!-- Login Form -->
+                    <form id="login-form-box" onsubmit="handleAuthAction(event, 'login')" class="f-grid">
+                        <div class="input-group-v2">
+                            <label>Identity</label>
+                            <input type="text" id="l-user" placeholder="vignesh" required>
+                        </div>
+                        <div class="input-group-v2">
+                            <label>Academic Tier</label>
+                            <select id="l-role">
+                                <option value="student">Student</option>
+                                <option value="admin">Administrator</option>
+                            </select>
+                        </div>
+                        <div class="input-group-v2 span-full">
+                            <label>Pass-Key</label>
+                            <input type="password" id="l-pass" placeholder="••••••••" required>
+                        </div>
+                        <button type="submit" class="auth-submit-btn span-full">Activate Session</button>
+                    </form>
+
+                    <!-- Signup Form -->
+                    <form id="signup-form-box" onsubmit="handleAuthAction(event, 'signup')" class="f-grid hidden">
+                        <div class="input-group-v2 span-full">
+                            <label>Full Identity</label>
+                            <input type="text" id="s-user" placeholder="Your Username" required>
+                        </div>
+                        <div class="input-group-v2 span-full">
+                            <label>Create Pass-Key</label>
+                            <input type="password" id="s-pass" placeholder="Create Strength Key" required>
+                        </div>
+                        <p style="color: #475569; font-size: 0.85rem; padding: 10px;" class="span-full">Account creation is restricted to Students. Administrators are pre-configured.</p>
+                        <button type="submit" class="auth-submit-btn span-full">Establish Security Account</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        AOS.init({ duration: 800, once: true });
+
+        function switchAuth(type) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`${type}-tab`).classList.add('active');
+            
+            if (type === 'login') {
+                document.getElementById('login-form-box').classList.remove('hidden');
+                document.getElementById('signup-form-box').classList.add('hidden');
+            } else {
+                document.getElementById('login-form-box').classList.add('hidden');
+                document.getElementById('signup-form-box').classList.remove('hidden');
+            }
+        }
+
+        async function handleAuthAction(event, mode) {
+            event.preventDefault();
+            const url = mode === 'login' ? '/api/login' : '/api/signup';
+            const username = document.getElementById(mode === 'login' ? 'l-user' : 's-user').value;
+            const password = document.getElementById(mode === 'login' ? 'l-pass' : 's-pass').value;
+            const role = mode === 'login' ? document.getElementById('l-role').value : 'student';
+
+            try {
+                const resp = await fetch(url, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({username, password, role})
+                });
+                const data = await resp.json();
+
+                if (resp.ok) {
+                    if (mode === 'signup') {
+                        Swal.fire('Identity Authenticated', data.message, 'success');
+                        switchAuth('login');
+                    } else {
+                        localStorage.setItem('user', JSON.stringify(data.user));
+                        location.href = '/dashboard';
+                    }
+                } else {
+                    Swal.fire('Identity Denied', data.message, 'error');
+                }
+            } catch (e) { Swal.fire('Error', 'Neural link failed', 'error'); }
+        }
+
+        async function checkNetwork() {
+            try {
+                const resp = await fetch('/api/wifi_check');
+                const data = await resp.json();
+                const el = document.getElementById('status-text');
+                if (data.is_on) {
+                    el.innerText = `LOCKED: ${data.ssid}`;
+                    el.style.color = '#22c55e';
+                } else {
+                    el.innerText = data.ssid ? `RESTRICTED: ${data.ssid}` : 'OFF-CAMPUS: RESTRICTED';
+                    el.style.color = '#ef4444';
+                }
+            } catch (e) {}
+        }
+        setInterval(checkNetwork, 5000);
+        checkNetwork();
+    </script>
+</body>
+</html>
